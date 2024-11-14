@@ -15,6 +15,9 @@ export function loginUser(user: User, onResult: SessionCallback, onError: ErrorC
                 const session = await response.json() as Session;
                 sessionStorage.setItem('token', session.token);
                 sessionStorage.setItem('externalId', session.externalId);
+                if(session.id){
+                sessionStorage.setItem('id', session.id.toString());
+                }
                 sessionStorage.setItem('username', session.username || "");
                 onResult(session)
             } else {

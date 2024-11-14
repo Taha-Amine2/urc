@@ -2,11 +2,15 @@ import {useState} from "react";
 import {loginUser} from "./loginApi";
 import {Session} from "../model/common";
 import {CustomError} from "../model/CustomError";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
 
     const [error, setError] = useState({} as CustomError);
     const [session, setSession] = useState({} as Session);
+
+    const navigate = useNavigate();
+
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -18,6 +22,7 @@ export function Login() {
                 setSession(result);
                 form.reset();
                 setError(new CustomError(""));
+                navigate('/users');
             }, (loginError: CustomError) => {
                 console.log(loginError);
                 setError(loginError);
@@ -62,11 +67,7 @@ export function Login() {
                   <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                     Mot de Passe
                   </label>
-                  <div className="text-sm">
-                    <a href="google.com" className="font-semibold text-indigo-950 hover:text-indigo-500">
-                      Mot de passe oublié?
-                    </a>
-                  </div>
+                  
                 </div>
                 <div className="mt-2">
                   <input placeholder="Mot de passe"

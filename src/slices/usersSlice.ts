@@ -1,31 +1,44 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { User } from '../model/common'; 
+import axios from 'axios';
+
 
 interface UsersState {
-  list: User[];
+  list: User[];  
   loading: boolean;
   error?: string | null;
 }
 
 const initialState: UsersState = {
-  list: [],
+  list: [],  
   loading: false,
   error: null,
 };
 
-// Action to fetch all users
+
 export const fetchUsers = createAsyncThunk<User[], void, { rejectValue: string }>(
   'users/fetchUsers',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/api/getusers');
-      return response.data.results;
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        return rejectWithValue('Token missing');
+      }
+      console.log(token);
+      const response = await axios.get('/api/users', {
+        headers: {
+          'Authentication': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data || []; 
     } catch (error: any) {
       return rejectWithValue(error.message || 'Failed to fetch users');
     }
   }
 );
+
+
 
 export const createUser = createAsyncThunk<User, User, { rejectValue: string }>(
   'users/createUser',

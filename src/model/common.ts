@@ -19,6 +19,19 @@ export interface Session {
     externalId: string;
 }
 
+export interface Room {
+    room_id: number;
+    name: string;
+    created_on: string;
+  }
+
+  // types.ts
+export interface Message {
+    message_id: number;
+    sender: string;
+    content: string;
+  }
+  
 
 export interface EmptyCallback {
     (): void;
