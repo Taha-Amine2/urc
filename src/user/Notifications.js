@@ -38,6 +38,7 @@ console.log(beamsTokenProvider)
                 console.log("hihioo")// Abonnement global
                 await beamsClient.setUserId(userExternalId, beamsTokenProvider);
                 console.log("hihioan")
+                console.log(userExternalId)
                 const deviceId = await beamsClient.getDeviceId();
                 console.log("Push ID:", deviceId);
             } catch (error) {

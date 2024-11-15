@@ -1,41 +1,16 @@
 import { getConnecterUser, triggerNotConnected } from "../lib/session";
 import { sql } from "@vercel/postgres"; 
-const PushNotifications = require('@pusher/push-notifications-server');
 
-const beamsClient = new PushNotifications({
-    instanceId: '875e7724-b0db-4bdf-b082-54a376631128',
-    secretKey: '955C9D57C12DCB37DFCBC128F83EF54232F2B223A2894524BBB5E2398B007187',
-});
-
-// Helper function to send the push notification
-const sendPushNotification = async (receiverExternalId, message, sender) => {
-    const deepLinkUrl = `localhost:3002/messages/user/${receiverExternalId}`;
-    try {
-        const publishResponse = await beamsClient.publishToUsers([receiverExternalId], {
-            web: {
-                notification: {
-                    title: sender.username,
-                    body: message.content,
-                    ico: "https://www.univ-brest.fr/themes/custom/ubo_parent/favicon.ico",
-                },
-                data: {
-                    deepLinkUrl,
-                },
-            },
-        });
-        console.log('Notification sent', publishResponse);
-    } catch (error) {
-        console.error("Error sending notification:", error);
-    }
-};
 
 export default async (request, response) => {
     try {
+        
         const user = await getConnecterUser(request);
 
         if (!user) {
             return triggerNotConnected(response);
         }
+   
 
         const { receiver_id, content, receiver_type } = await request.body;
 
@@ -49,7 +24,7 @@ export default async (request, response) => {
             FROM users 
             WHERE user_id = ${receiver_id};
         `;
-
+console.log("ha l'externel :" ,receiverResult);
         if (receiverResult.rowCount === 0) {
             return response.status(404).json({ error: "Receiver not found." });
         }
@@ -69,8 +44,40 @@ export default async (request, response) => {
 
         const savedMessage = result.rows[0];
 
-        // Send the push notification to the receiver using their external_id
-        await sendPushNotification(receiverExternalId, savedMessage, user);
+        const PushNotifications = require('@pusher/push-notifications-server');
+
+        const beamsClient = new PushNotifications({
+            instanceId: '097db24c-140f-4e07-8caa-17dfa6d83ea3',
+            secretKey: '62FAB2C7CDB32D45A008008E07BE12B6BC3BDD4FAC66DB3942594EC8280DECBD',
+        });
+        
+        const sendPushNotification = async (receiverId, message, sender) => {
+            try {
+                const receiverIdString = String(receiverId);
+        
+                const deepLinkUrl = `localhost:3002/messages/user/${receiverIdString}`;
+                const publishResponse = await beamsClient.publishToUsers([receiverExternalId], {
+                    web: {
+                        notification: {
+                            title: user.username,
+                            body: message.content,
+                            ico: "https://www.univ-brest.fr/themes/custom/ubo_parent/favicon.ico",
+                        },
+                        data: {
+                            /* additionnal data */
+                        }
+                    },
+                });
+                console.log('Notification');
+            } catch (error) {
+                console.error("Error sending notification:", error);
+            }
+        
+        
+        
+        
+                };
+        await sendPushNotification(receiver_id, savedMessage, user);
 
         return response.status(200).json(savedMessage);
     } catch (error) {

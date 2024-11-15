@@ -1,5 +1,5 @@
-// Import necessary dependencies
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages, addMessage } from '../slices/messagesSlice';
 import { RootState, AppDispatch } from '../store';
@@ -7,8 +7,6 @@ import { useParams } from 'react-router-dom';
 import { UserList } from './UserList';
 import { RoomsList } from './RoomsList';
 
-// MessageChat Component
-// MessageChat Component
 export const MessageChat = () => {
   const { userId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
@@ -32,26 +30,28 @@ export const MessageChat = () => {
     };
 
     const token = sessionStorage.getItem('token');
-    const response = await fetch('/api/messages', {
-      method: 'POST',
-      headers: {
-        'Authentication': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(messageData),
-    });
+    
+    try {
+      const response = await axios.post('/api/messages', messageData, {
+        headers: {
+          'Authentication': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (response.ok) {
-      const sentMessage = await response.json();
-      dispatch(addMessage(sentMessage));
-      setNewMessage('');
-    } else console.error('Failed to send message');
+      if (response.status === 200) {
+        const sentMessage = response.data;
+        dispatch(addMessage(sentMessage));
+        setNewMessage('');
+      } else {
+        console.error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
   };
-  // Rest of the component code
-
 
   return (
-
     <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <div className="w-1/4 bg-white border-r border-gray-300">
@@ -64,17 +64,14 @@ export const MessageChat = () => {
             </svg>
           </button>
         </header>
-<div className="h-full flex flex-col w-[100%]">
-        <UserList />
-        <RoomsList />
+        <div className="h-full flex flex-col w-[100%]">
+          <UserList />
+          <RoomsList />
+        </div>
       </div>
-
-      </div>
-      
 
       {/* Main Chat Area */}
       <div className="flex flex-col w-[80%]">
-       
         <div className="flex-1 p-4 overflow-y-auto pb-24">
           {loading ? (
             <div>Chargement des messages...</div>
@@ -96,7 +93,7 @@ export const MessageChat = () => {
                         : 'bg-gray-200 text-black'
                     }`}
                   >
-                    <p>{message.content} </p>
+                    <p>{message.content}</p>
                     <span className="text-xs text-gray-500">{message.timestamp}</span>
                   </div>
                 </li>

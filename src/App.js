@@ -1,5 +1,7 @@
 import './App.css';
 import { Login } from "./user/Login";
+import React, { useEffect } from 'react';
+
 import { Register } from "./user/Register";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { UserList } from './user/UserList';
@@ -17,6 +19,21 @@ function App() {
     }
   });
 
+  useEffect(() => {
+    // Assurez-vous que le service worker est disponible
+    if ('serviceWorker' in navigator) {
+      const sw = navigator.serviceWorker;
+
+      // Écouter le message envoyé depuis le service worker
+      sw.onmessage = (event) => {
+        console.log('Got event from SW:', event.data);
+
+        // Vous pouvez traiter le message ici. Par exemple, vous pouvez afficher un toast, une alerte ou mettre à jour l'état
+        const { title, message } = event.data;  // Assurez-vous que `event.data` contient les bonnes informations
+        alert(`New Notification: ${title} - ${message}`);
+      };
+    }
+  }, []);
   return (
     <Notifications> {/* Notifications doit envelopper toute l'application */}
       <Router>
