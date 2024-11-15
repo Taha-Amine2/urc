@@ -5,16 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { store } from './store';
-import Notifications from './user/Notifications';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Notifications>
-        <App />
-      </Notifications>
+       <App />
     </Provider>
    
   </React.StrictMode>
