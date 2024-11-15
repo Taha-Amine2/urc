@@ -1,5 +1,5 @@
 import { getConnecterUser, triggerNotConnected } from "../lib/session";
-import { sql } from "@vercel/postgres"; 
+import { db } from '@vercel/postgres';
 
 
 export default async (request, response) => {
@@ -19,7 +19,7 @@ export default async (request, response) => {
         }
 
         // Query the database to get the receiver's external_id
-        const receiverResult = await sql`
+        const receiverResult = await db.sql`
             SELECT external_id 
             FROM users 
             WHERE user_id = ${receiver_id};
@@ -32,7 +32,7 @@ console.log("ha l'externel :" ,receiverResult);
         const receiverExternalId = receiverResult.rows[0].external_id;
 
         // Save the message in the database
-        const result = await sql`
+        const result = await db.sql`
             INSERT INTO messages (sender_id, sender_name, receiver_id, content, receiver_type)
             VALUES (${user.id}, ${user.username}, ${receiver_id}, ${content}, ${receiver_type})
             RETURNING message_id, sender_id, sender_name, receiver_id, content, timestamp, receiver_type;

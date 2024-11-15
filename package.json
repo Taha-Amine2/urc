@@ -2,7 +2,6 @@
   "name": "urc",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@material-tailwind/react": "^2.1.10",
