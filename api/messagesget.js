@@ -32,12 +32,13 @@ export default async function handler(request) {
                 message_id, 
                 sender_id, 
                 receiver_id, 
+                sender_name,
                 content, 
                 TO_CHAR(timestamp, 'DD/MM/YYYY HH24:MI') AS timestamp 
             FROM messages
             WHERE (sender_id = ${connected.id} AND receiver_id = ${receiver_id})
                OR (sender_id = ${receiver_id} AND receiver_id = ${connected.id})
-            ORDER BY timestamp DESC
+            ORDER BY timestamp ASC
         `;
 
         console.log("Got " + rowCount + " messages");

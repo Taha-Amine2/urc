@@ -2,60 +2,83 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import axios from 'axios';
 
-// Define the type for a message
 interface Message {
   message_id: number;
   sender_id: number;
   receiver_id: number;
   content: string;
-  timestamp: string; // Assuming a string timestamp, could be Date if needed
+  timestamp: string;
 }
 
-// Define the type for the state
+interface Messagegrp {
+  message_id: number;
+  sender_id: number;
+  receiver_id: number;
+  sender_name:string;
+  content: string;
+  timestamp: string;
+}
+
 interface MessagesState {
-  list: Message[];  // List of messages
-  loading: boolean;  // Loading state
-  error: string | null; // Error message if any
+  list: Message[];
+  listgrp: Messagegrp[];
+  loading: boolean;
+  error: string | null;
 }
 
-// Async thunk to fetch messages for a specific user
-export const fetchMessages = createAsyncThunk<Message[], number, { rejectValue: string }>(
+export const fetchMessages = createAsyncThunk<Message[], { receiverId: number; receiverType: string }, { rejectValue: string }>(
   'messages/fetchMessages',
-  async (receiverId, { rejectWithValue }) => {
+  async ({ receiverId, receiverType }, { rejectWithValue }) => {
     try {
       const token = sessionStorage.getItem('token');
-      if (!token) {
-        return rejectWithValue('Token missing');
-      }
-      const response = await axios.get(`/api/messagesget?receiver_id=${receiverId}`, {
+      if (!token) return rejectWithValue('Token missing');
+
+      const response = await axios.get(`/api/messagesget?receiver_id=${receiverId}&receiver_type=${receiverType}`, {
         headers: {
           'Authentication': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
-
       return response.data;
     } catch (error: unknown) {
-      // Ensure error is a string when rejecting
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
+      if (error instanceof Error) return rejectWithValue(error.message);
       return rejectWithValue('An unknown error occurred');
     }
   }
 );
 
-// Slice to store messages
+export const fetchMessagesGrp = createAsyncThunk<Messagegrp[], { receiverId: number; receiverType: string }, { rejectValue: string }>(
+  'messages/fetchMessagesGrp',
+  async ({ receiverId, receiverType }, { rejectWithValue }) => {
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) return rejectWithValue('Token missing');
+
+      const response = await axios.get(`/api/messagesget?receiver_id=${receiverId}&receiver_type=${receiverType}`, {
+        headers: {
+          'Authentication': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) return rejectWithValue(error.message);
+      return rejectWithValue('An unknown error occurred');
+    }
+  }
+);
+
 const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
     list: [],
+    listgrp: [],
     loading: false,
     error: null,
-  } as MessagesState, // Type the state
+  } as MessagesState,
   reducers: {
     addMessage: (state, action: PayloadAction<Message>) => {
-      state.list.push(action.payload); // Add the new message to the list
+      state.list.push(action.payload);
     },
     setMessages: (state, action: PayloadAction<Message[]>) => {
       state.list = action.payload;
@@ -66,13 +89,17 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;
       })
+      .addCase(fetchMessagesGrp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.listgrp = action.payload;
+      })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload; // Update the messages list with fetched messages
+        state.list = action.payload;
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string; // Ensure error is treated as a string
+        state.error = action.payload as string;
       });
   },
 });
@@ -81,6 +108,7 @@ export const { addMessage } = messagesSlice.actions;
 
 // Selectors
 export const selectMessages = (state: RootState) => state.messages.list;
+export const selectMessagesgrp = (state: RootState) => state.messages.listgrp;
 export const selectMessagesLoading = (state: RootState) => state.messages.loading;
 export const selectMessagesError = (state: RootState) => state.messages.error;
 

@@ -8,27 +8,27 @@ import { UserList } from './UserList';
 import { RoomsList } from './RoomsList';
 
 // MessageChat Component
+// MessageChat Component
 export const MessageChat = () => {
-  const { userId } = useParams(); // userId from the URL
+  const { userId } = useParams();
   const dispatch = useDispatch<AppDispatch>();
   const { list: messages, loading, error } = useSelector((state: RootState) => state.messages);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    if (userId) dispatch(fetchMessages(Number(userId)));
+    if (userId) {
+      dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
+    }
   }, [dispatch, userId]);
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    const receiverId = Number(userId);
-    const senderId = Number(sessionStorage.getItem('user_id'));
-
-    if (isNaN(senderId) || isNaN(receiverId)) return;
 
     const messageData = {
-      receiver_id: receiverId,
+      receiver_id: Number(userId),
       content: newMessage.trim(),
-      sender_id: senderId,
+      sender_id: Number(sessionStorage.getItem('id')),
+      receiver_type: "user",
     };
 
     const token = sessionStorage.getItem('token');
@@ -47,6 +47,8 @@ export const MessageChat = () => {
       setNewMessage('');
     } else console.error('Failed to send message');
   };
+  // Rest of the component code
+
 
   return (
 

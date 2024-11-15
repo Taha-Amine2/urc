@@ -29,6 +29,7 @@ export interface Room {
 export interface Message {
     message_id: number;
     sender: string;
+    sender_name:string;
     content: string;
   }
   
