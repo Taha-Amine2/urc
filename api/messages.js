@@ -1,6 +1,9 @@
 import { getConnecterUser, triggerNotConnected } from "../lib/session";
 import { db } from '@vercel/postgres';
 
+export const config = {
+    runtime: 'edge',
+};
 
 export default async (request, response) => {
     try {
