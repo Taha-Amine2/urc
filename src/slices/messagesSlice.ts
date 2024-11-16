@@ -68,6 +68,39 @@ export const fetchMessagesGrp = createAsyncThunk<Messagegrp[], { receiverId: num
   }
 );
 
+export const sendMessage = createAsyncThunk<Message, { receiverId: number; content: string }, { rejectValue: string }>(
+  'messages/sendMessage',
+  async ({ receiverId, content }, { rejectWithValue }) => {
+    try {
+      const token = sessionStorage.getItem('token');
+      const senderId = Number(sessionStorage.getItem('id'));
+
+      if (!token || !senderId) return rejectWithValue('Token or sender ID missing');
+
+      const response = await axios.post(
+        '/api/messages',
+        {
+          receiver_id: receiverId,
+          content: content,
+          sender_id: senderId,
+          receiver_type: 'user',
+        },
+        {
+          headers: {
+            'Authentication': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) return rejectWithValue(error.message);
+      return rejectWithValue('An unknown error occurred');
+    }
+  }
+);
+
 const messagesSlice = createSlice({
   name: 'messages',
   initialState: {
@@ -89,16 +122,18 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchMessagesGrp.fulfilled, (state, action) => {
-        state.loading = false;
-        state.listgrp = action.payload;
-      })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload;
       })
       .addCase(fetchMessages.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(sendMessage.fulfilled, (state, action) => {
+        state.list.push(action.payload); // Add new message to list
+      })
+      .addCase(sendMessage.rejected, (state, action) => {
         state.error = action.payload as string;
       });
   },

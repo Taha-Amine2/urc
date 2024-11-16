@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchMessages, addMessage } from '../slices/messagesSlice';
+import { fetchMessages, sendMessage } from '../slices/messagesSlice';
 import { RootState, AppDispatch } from '../store';
 import { useParams } from 'react-router-dom';
 import { UserList } from './UserList';
@@ -19,36 +18,15 @@ export const MessageChat = () => {
     }
   }, [dispatch, userId]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
-    const messageData = {
-      receiver_id: Number(userId),
-      content: newMessage.trim(),
-      sender_id: Number(sessionStorage.getItem('id')),
-      receiver_type: "user",
-    };
-
-    const token = sessionStorage.getItem('token');
-    
-    try {
-      const response = await axios.post('/api/messages', messageData);
-
-      if (response.status === 200) {
-        const sentMessage = response.data;
-        dispatch(addMessage(sentMessage));
-        setNewMessage('');
-      } else {
-        console.error('Failed to send message');
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+    dispatch(sendMessage({ receiverId: Number(userId), content: newMessage.trim() }));
+    setNewMessage(''); // Clear input after dispatching the action
   };
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
-      {/* Sidebar */}
       <div className="w-1/4 bg-white border-r border-gray-300">
         <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-indigo-600 text-white">
           <h1 className="text-2xl font-semibold">UBO Chat Relay</h1>
