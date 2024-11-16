@@ -70,8 +70,26 @@ export default async (request) => {
     }
 };
 
-// Mocked notification function for Edge compatibility
+// Call the external notification API to send push notification
 const sendPushNotification = async (receiverExternalId, message, sender) => {
-    // Push notification logic here, but keep it compatible with Edge or move to a standard function.
-    console.log("Notification sent to", receiverExternalId, ":", message.content);
+    try {
+        const response = await fetch('/api/send-notification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                receiverExternalId,
+                message,
+                sender,
+            }),
+        });
+
+        if (!response.ok) {
+            console.error("Failed to send notification:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Error in sendPushNotification:", error);
+    }
 };
+
