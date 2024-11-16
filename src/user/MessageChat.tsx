@@ -31,24 +31,7 @@ export const MessageChat = () => {
 
     const token = sessionStorage.getItem('token');
     
-    try {
-      const response = await axios.post('/api/messages', messageData, {
-        headers: {
-          'Authentication': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.status === 200) {
-        const sentMessage = response.data;
-        dispatch(addMessage(sentMessage));
-        setNewMessage('');
-      } else {
-        console.error('Failed to send message');
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
+   
   };
 
   return (
