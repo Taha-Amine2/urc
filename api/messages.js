@@ -4,22 +4,20 @@ import { db } from '@vercel/postgres';
 export const config = {
     runtime: 'edge',
 };
-
-export default async (request) => {
+export default async (request, response) => {
     try {
+        
         const user = await getConnecterUser(request);
 
         if (!user) {
-            return triggerNotConnected();
+            return triggerNotConnected(response);
         }
+   
 
-        const { receiver_id, content, receiver_type } = await request.json();
+        const { receiver_id, content, receiver_type } = await request.body;
 
         if (!receiver_id || !content || !receiver_type) {
-            return new Response(JSON.stringify({ error: "Receiver ID, content, and receiver type are required." }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' },
-            });
+            return response.status(400).json({ error: "Receiver ID, content, and receiver type are required." });
         }
 
         // Query the database to get the receiver's external_id
@@ -28,12 +26,9 @@ export default async (request) => {
             FROM users 
             WHERE user_id = ${receiver_id};
         `;
-
+console.log("ha l'externel :" ,receiverResult);
         if (receiverResult.rowCount === 0) {
-            return new Response(JSON.stringify({ error: "Receiver not found." }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-            });
+            return response.status(404).json({ error: "Receiver not found." });
         }
 
         const receiverExternalId = receiverResult.rows[0].external_id;
@@ -46,50 +41,49 @@ export default async (request) => {
         `;
 
         if (result.rowCount === 0) {
-            return new Response(JSON.stringify({ error: "Message could not be saved." }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' },
-            });
+            return response.status(500).json({ error: "Message could not be saved." });
         }
 
         const savedMessage = result.rows[0];
 
-        // Notify the user
-        await sendPushNotification(receiverExternalId, savedMessage, user);
+        const PushNotifications = require('@pusher/push-notifications-server');
 
-        return new Response(JSON.stringify(savedMessage), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
+        const beamsClient = new PushNotifications({
+            instanceId: '097db24c-140f-4e07-8caa-17dfa6d83ea3',
+            secretKey: '62FAB2C7CDB32D45A008008E07BE12B6BC3BDD4FAC66DB3942594EC8280DECBD',
         });
+        
+        const sendPushNotification = async (receiverId, message, sender) => {
+            try {
+                const receiverIdString = String(receiverId);
+        
+                const deepLinkUrl = `localhost:3002/messages/user/${receiverIdString}`;
+                const publishResponse = await beamsClient.publishToUsers([receiverExternalId], {
+                    web: {
+                        notification: {
+                            title: user.username,
+                            body: message.content,
+                            ico: "https://www.univ-brest.fr/themes/custom/ubo_parent/favicon.ico",
+                        },
+                        data: {
+                            /* additionnal data */
+                        }
+                    },
+                });
+                console.log('Notification');
+            } catch (error) {
+                console.error("Error sending notification:", error);
+            }
+        
+        
+        
+        
+                };
+        await sendPushNotification(receiver_id, savedMessage, user);
+
+        return response.status(200).json(savedMessage);
     } catch (error) {
         console.error("Error saving message:", error);
-        return new Response(JSON.stringify({ error: "An error occurred while saving the message." }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return response.status(500).json({ error: "An error occurred while saving the message." });
     }
 };
-
-// Call the external notification API to send push notification
-const sendPushNotification = async (receiverExternalId, message, sender) => {
-    try {
-        const response = await fetch('/api/send-notification', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                receiverExternalId,
-                message,
-                sender,
-            }),
-        });
-
-        if (!response.ok) {
-            console.error("Failed to send notification:", response.statusText);
-        }
-    } catch (error) {
-        console.error("Error in sendPushNotification:", error);
-    }
-};
-
