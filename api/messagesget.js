@@ -33,6 +33,7 @@ export default async function handler(request) {
                 sender_id, 
                 receiver_id, 
                 sender_name,
+                image_url,
                 content, 
                 TO_CHAR(timestamp, 'DD/MM/YYYY HH24:MI') AS timestamp 
             FROM messages

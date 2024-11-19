@@ -28,6 +28,7 @@ CREATE TABLE messages (
     sender_name TEXT NOT NULL,
     receiver_id INTEGER NOT NULL,
     receiver_TYPE TEXT NOT NULL,
+    image_url TEXT NOT NULL,
     content TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sender_id) REFERENCES users(user_id),
