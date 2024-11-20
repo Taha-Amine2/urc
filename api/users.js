@@ -1,9 +1,6 @@
 import { sql } from "@vercel/postgres";
 import {checkSession, unauthorizedResponse} from "../lib/session";
 
-export const config = {
-    runtime: 'edge',
-};
 
 export default async function handler(request) {
     try {
