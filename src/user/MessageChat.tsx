@@ -21,12 +21,35 @@ export const MessageChat = () => {
     }
   }, [dispatch, userId]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-
-    dispatch(sendMessage({ receiverId: Number(userId), content: newMessage.trim() }));
-    setNewMessage(''); // Clear input after dispatching the action
+  
+    // Create the new message object
+    const newMessageObj = {
+      message_id: Date.now(), // Temporary unique ID for optimistic UI
+      sender_id: Number(sessionStorage.getItem('id')),
+      receiver_id: Number(userId),
+      content: newMessage.trim(),
+      timestamp: new Date().toISOString(),
+      image_url: null, // Assuming it's a text message, adjust if it's an image
+    };
+  
+    // Optimistically update the local state
+    dispatch({
+      type: 'messages/addMessage', // Dispatch an action to add the new message
+      payload: newMessageObj,
+    });
+  
+    // Clear input
+    setNewMessage('');
+  
+    // Send the message
+    await dispatch(sendMessage({
+      receiverId: Number(userId),
+      content: newMessageObj.content,
+    }));
   };
+  
 
   // Correctly type the event to be ChangeEvent<HTMLInputElement>
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,30 +96,30 @@ export const MessageChat = () => {
             <div>Erreur lors du chargement des messages</div>
           ) : (
             <ul className="space-y-4">
-              {messages.map((message) => (
-                <li
-                  key={message.message_id}
-                  className={`flex ${
-                    message.sender_id === Number(sessionStorage.getItem('id')) ? 'justify-end' : ''
-                  }`}
-                >
-                  <div
-                    className={`p-3 rounded-lg ${
-                      message.sender_id === Number(sessionStorage.getItem('id'))
-                        ? 'bg-blue-300 text-white'
-                        : 'bg-gray-200 text-black'
-                    }`}
-                  >
-                    {/* Afficher l'image si image_url est présente */}
-                    {message.image_url ? (
-                      <img src={message.image_url} alt="Message attachment" className="max-w-xs max-h-60 rounded" />
-                    ) : (
-                      <p>{message.content}</p>
-                    )}
-                    <span className="text-xs text-gray-500">{message.timestamp}</span>
-                  </div>
-                </li>
-              ))}
+              {messages.map((message, index) => (
+  <li
+    key={message.message_id ? message.message_id : `message-${index}`}  // Fallback to index if message_id is missing
+    className={`flex ${
+      message.sender_id === Number(sessionStorage.getItem('id')) ? 'justify-end' : ''
+    }`}
+  >
+    <div
+      className={`p-3 rounded-lg ${
+        message.sender_id === Number(sessionStorage.getItem('id'))
+          ? 'bg-blue-300 text-white'
+          : 'bg-gray-200 text-black'
+      }`}
+    >
+      {message.image_url ? (
+        <img src={message.image_url} alt="Message attachment" className="max-w-xs max-h-60 rounded" />
+      ) : (
+        <p>{message.content}</p>
+      )}
+      <span className="text-xs text-gray-500">{message.timestamp}</span>
+    </div>
+  </li>
+))}
+
             </ul>
           )}
         </div>
