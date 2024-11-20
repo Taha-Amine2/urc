@@ -1,7 +1,7 @@
 import { db } from '@vercel/postgres';
 import { Redis } from '@upstash/redis';
 import { arrayBufferToBase64, stringToArrayBuffer } from "../lib/base64";
-const PushNotifications = require('@pusher/push-notifications-server');
+
 export const config = {
     runtime: 'edge',
 };
