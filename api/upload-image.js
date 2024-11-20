@@ -1,9 +1,5 @@
 import { put } from '@vercel/blob';
 
-export const config = {
-  runtime: 'edge',  // Ensures edge runtime is configured for serverless functions
-};
-
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ message: 'Only POST requests are allowed' }), { status: 405 });
