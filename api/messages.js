@@ -1,9 +1,9 @@
 import { getConnecterUser, triggerNotConnected } from "../lib/session";
 import { db } from '@vercel/postgres';
-import PushNotifications from '@pusher/push-notifications-server';
+const PushNotifications = require('@pusher/push-notifications-server');
 
 export const config = {
-    runtime: 'nodejs14.x', 
+    runtime: 'edge',
 };
 
 export default async (request, response) => {
