@@ -1,14 +1,14 @@
 import './App.css';
-import { Login } from "./user/Login";
+import { Login } from "./user/Login.tsx";
 import React, { useEffect } from 'react';
 
-import { Register } from "./user/Register";
+import { Register } from "./user/Register.tsx";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { UserList } from './user/UserList';
-import { RoomsList } from './user/RoomsList';
-import { MessageChat } from './user/MessageChat';
-import { GroupeChat } from './user/GroupeChat';
-import Notifications from './user/Notifications'; // Importer Notifications
+import { UserList } from './user/UserList.tsx';
+import { RoomsList } from './user/RoomsList.tsx';
+import { MessageChat } from './user/MessageChat.tsx';
+import { GroupeChat } from './user/GroupeChat.tsx';
+import Notifications from './user/Notifications.js'; // Importer Notifications
 
 function App() {
   window.Notification.requestPermission().then((permission) => {

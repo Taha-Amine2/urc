@@ -1,6 +1,7 @@
-import { getConnecterUser, triggerNotConnected } from "../lib/session";
+import { getConnecterUser, triggerNotConnected } from "../lib/session.js";
 import { db } from '@vercel/postgres';
-const PushNotifications = require('@pusher/push-notifications-server');
+import PushNotifications from '@pusher/push-notifications-server';  // Utilisation d'import
+
 
 
 export default async (request, response) => {

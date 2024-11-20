@@ -30,6 +30,7 @@ if (!token || !userExternalId) {
             try {
                 await beamsClient.start();
                 await beamsClient.addDeviceInterest('global'); 
+                console.log("ha lbeam token",beamsTokenProvider)
                 await beamsClient.setUserId(userExternalId, beamsTokenProvider);
                 const deviceId = await beamsClient.getDeviceId();
             } catch (error) {
