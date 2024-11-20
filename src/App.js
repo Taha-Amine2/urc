@@ -19,36 +19,13 @@ function App() {
     }
   });
 
-  useEffect(() => {
-    // Assurez-vous que le service worker est disponible
-    if ('serviceWorker' in navigator) {
-      const sw = navigator.serviceWorker;
-
-      // Écouter le message envoyé depuis le service worker
-      sw.onmessage = (event) => {
-        console.log('Got event from SW:', event.data);
-
-        // Vous pouvez traiter le message ici. Par exemple, vous pouvez afficher un toast, une alerte ou mettre à jour l'état
-        const { title, message } = event.data;  // Assurez-vous que `event.data` contient les bonnes informations
-        alert(`New Notification: ${title} - ${message}`);
-      };
-    }
-  }, []);
   return (
-    <Notifications> {/* Notifications doit envelopper toute l'application */}
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/users" element={<UserList />} />
-          <Route path="/rooms" element={<RoomsList />} />
-          <Route path="/messages/user/:userId" element={<MessageChat />} />
-          <Route path="/messages/room/:roomId" element={<GroupeChat />} />
-          <Route path="/messages/" element={<MessageChat />} />
         </Routes>
       </Router>
-    </Notifications>
   );
 }
 
