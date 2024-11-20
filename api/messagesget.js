@@ -1,7 +1,9 @@
 import { checkSession, unauthorizedResponse } from "../lib/session";
 import { sql } from "@vercel/postgres";
 
-
+export const config = {
+    runtime: 'edge',  // Ensure edge runtime is configured if you are using serverless
+};
 
 export default async function handler(request) {
     try {
