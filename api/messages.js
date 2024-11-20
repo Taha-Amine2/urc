@@ -3,7 +3,7 @@ import { db } from '@vercel/postgres';
 import PushNotifications from '@pusher/push-notifications-server';
 
 export const config = {
-    runtime: 'edge',
+    runtime: 'nodejs14.x', 
 };
 
 export default async (request, response) => {
