@@ -15,7 +15,6 @@ export const MessageChat = () => {
 
   // Ref to the file input element
   const fileInputRef = useRef<HTMLInputElement>(null);
-console.log("ha messagar",messages);
   useEffect(() => {
     if (userId) {
       dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
@@ -42,7 +41,6 @@ console.log("ha messagar",messages);
 
   const handleUploadImage = async (file: File) => {
     if (file) {
-      console.log("ana hna")
       await dispatch(uploadImageMessage({ file, receiverId: Number(userId),receiverType:'user' }));
       setSelectedFile(null); // Reset selected file after upload
     }

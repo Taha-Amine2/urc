@@ -4,13 +4,9 @@ const PushNotifications = require("@pusher/push-notifications-server");
 
 
 export default async (req, res) => {
-    console.log("ici")
-console.log(req.query['user_id'])
     const userIDInQueryParam = req.query["user_id"];
     const user = await getConnecterUser(req);
-    console.log("PushToken : " + userIDInQueryParam + " -> " + JSON.stringify(user));
     if (user === undefined || user === null || userIDInQueryParam !== user.externalId) {
-        console.log("Not connected");
         triggerNotConnected(res);
         return;
     }
@@ -22,7 +18,5 @@ console.log(req.query['user_id'])
     });
 
     const beamsToken = beamsClient.generateToken(user.externalId);
-    console.log("ha token")
-    console.log(JSON.stringify(beamsToken));
     res.send(beamsToken);
 };

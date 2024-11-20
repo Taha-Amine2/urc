@@ -11,7 +11,6 @@ const beamsClient = new Client({
 
 const Notifications = ({ children }) => {
     useEffect(() => {
-        console.log("HHHH")
         const initializePushNotifications = async () => {
             const token = sessionStorage.getItem('token');
 const userExternalId = sessionStorage.getItem('externalId');
@@ -21,7 +20,6 @@ if (!token || !userExternalId) {
     return; // Sortir de la fonction si les données sont manquantes
 }
 
-            console.log(userExternalId)
 
             const beamsTokenProvider = new TokenProvider({
                 url: "/api/beams",
@@ -29,18 +27,11 @@ if (!token || !userExternalId) {
                     Authentication: "Bearer " + token,
                 },
             });
-console.log(beamsTokenProvider)
             try {
-                console.log("hihi")
                 await beamsClient.start();
-                console.log("hihio")
                 await beamsClient.addDeviceInterest('global'); 
-                console.log("hihioo")// Abonnement global
                 await beamsClient.setUserId(userExternalId, beamsTokenProvider);
-                console.log("hihioan")
-                console.log(userExternalId)
                 const deviceId = await beamsClient.getDeviceId();
-                console.log("Push ID:", deviceId);
             } catch (error) {
                 console.error("Erreur d'initialisation des notifications push:", error);
             }

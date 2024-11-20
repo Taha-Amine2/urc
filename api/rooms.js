@@ -22,7 +22,6 @@ export default async function handler(request) {
             ORDER BY created_on DESC
         `;
 
-        console.log("Got " + rowCount + " rooms");
 
         if (rowCount === 0) {
             return new Response("[]", {
