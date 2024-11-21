@@ -117,7 +117,7 @@ export const uploadImageMessage = createAsyncThunk<
     try {
       const token = sessionStorage.getItem('token');
       if (!token) return rejectWithValue('Token missing');
-
+      const arrayBuffer = await file.arrayBuffer(); // Convertir le fichier en ArrayBuffer
       const formData = new FormData();
       formData.append('file', file);
       const contentType = file.type || 'image/jpeg';
@@ -129,7 +129,7 @@ export const uploadImageMessage = createAsyncThunk<
           headers: {
             'Authentication': `Bearer ${token}`,
           },
-          body: file,
+          body: arrayBuffer,
         }
       );
 
