@@ -12,8 +12,9 @@ export const MessageChat = () => {
   const { list: messages, loading, error } = useSelector((state: RootState) => state.messages);
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State type is File or null
-
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const scrollRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (userId) {
       dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
@@ -32,10 +33,7 @@ export const MessageChat = () => {
       image_url: null, 
     };
   
-    dispatch({
-      type: 'messages/addMessage', 
-      payload: newMessageObj,
-    });
+   
   
     // Clear input
     setNewMessage('');
@@ -73,6 +71,12 @@ export const MessageChat = () => {
     // Trigger the file input click programmatically when the button is clicked
     fileInputRef.current?.click();
   };
+  
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -117,6 +121,8 @@ export const MessageChat = () => {
       )}
       <span className="text-xs text-gray-500">{message.timestamp}</span>
     </div>
+
+    {index === messages.length - 1 && <div ref={scrollRef} />}
   </li>
 ))}
 
