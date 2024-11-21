@@ -44,7 +44,6 @@ if (!token || !userExternalId) {
     return (
         <>
             {children}
-            <div>Notifications Component Loaded</div>
         </>
     );
     

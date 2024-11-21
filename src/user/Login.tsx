@@ -22,7 +22,7 @@ export function Login() {
                 setSession(result);
                 form.reset();
                 setError(new CustomError(""));
-                navigate('/users');
+                navigate('/messages/');
             }, (loginError: CustomError) => {
                 console.log(loginError);
                 setError(loginError);

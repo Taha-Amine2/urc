@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { createUser } from "../slices/usersSlice";
 import { User } from "../model/common";
 import { AppDispatch, RootState } from "../store";  
+import { useNavigate } from "react-router-dom";
 
 export function Register() {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();  
   const { error } = useSelector((state: RootState) => state.users); // Accéder à users.error depuis l'état global
   const [username, setUsername] = useState<string>('');
@@ -26,6 +28,7 @@ export function Register() {
       setUsername('');
       setEmail('');
       setPassword('');
+      navigate('/login');
     } catch (e) {
       console.log(e);
     }
