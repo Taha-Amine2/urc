@@ -61,7 +61,9 @@ export const MessageChat = () => {
 
   const handleUploadImage = async (file: File) => {
     if (file) {
-      await dispatch(uploadImageMessage({ file, receiverId: Number(userId),receiverType:'user',content: newMessage.trim(), }));
+      const messageimage = newMessage.trim() === ''?'IMAGE':newMessage.trim();
+      console.log("hahowa",messageimage)
+      await dispatch(uploadImageMessage({ file, receiverId: Number(userId),receiverType:'user',content: messageimage }));
       setSelectedFile(null);
       setNewMessage('');
     }
