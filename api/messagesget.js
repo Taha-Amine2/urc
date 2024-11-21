@@ -2,7 +2,7 @@ import { checkSession, unauthorizedResponse } from "../lib/session";
 import { sql } from "@vercel/postgres";
 
 export const config = {
-    runtime: 'edge',  // Ensure edge runtime is configured if you are using serverless
+    runtime: 'edge',  
 };
 
 export default async function handler(request) {
@@ -14,7 +14,6 @@ export default async function handler(request) {
             return unauthorizedResponse();
         }
 
-        // Use URL searchParams to extract query parameters in edge functions
         const url = new URL(request.url);
         const receiver_id = url.searchParams.get("receiver_id");
 
@@ -26,7 +25,6 @@ export default async function handler(request) {
         }
         console.log(connected)
 
-        // Fetch messages between the authenticated user and the receiver
         const { rowCount, rows } = await sql`
             SELECT 
                 message_id, 

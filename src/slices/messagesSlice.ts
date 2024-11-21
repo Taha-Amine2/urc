@@ -109,11 +109,11 @@ export const sendMessage = createAsyncThunk<Message, { receiverId: number; conte
 // Update the uploadImageMessage thunk to handle both 'user' and 'group' message types.
 export const uploadImageMessage = createAsyncThunk<
   Message,
-  { file: File; receiverId: number; receiverType: string },
+  { file: File; receiverId: number; receiverType: string; content: string },
   { rejectValue: string }
 >(
   'messages/uploadImageMessage',
-  async ({ file, receiverId, receiverType }, { rejectWithValue }) => {
+  async ({ file, receiverId, receiverType,content: blob }, { rejectWithValue }) => {
     try {
       const token = sessionStorage.getItem('token');
       if (!token) return rejectWithValue('Token missing');
@@ -147,7 +147,7 @@ export const uploadImageMessage = createAsyncThunk<
         {
           receiver_id: receiverId,
           sender_id: senderId,
-          content: 'blob',
+          content: blob,
           receiver_type: receiverType, // Handle group messages as well
           image_url: imageUrl,
         },

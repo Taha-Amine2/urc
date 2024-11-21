@@ -7,9 +7,8 @@ export async function POST(request) {
   try {
     const blob = await put(filename, request.body, { access: 'public' });
 
-    // Log the blob data to the console (for debugging purposes)
     console.log('------------------------------------');
-    console.log(blob);  // Log the blob object directly
+    console.log(blob);  
     console.log('------------------------------------');
 
     // Return the blob as JSON response
@@ -17,7 +16,7 @@ export async function POST(request) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error uploading file:', error);  // Log the error for debugging
+    console.error('Error uploading file:', error);  
     return new Response(
       JSON.stringify({ error: 'Failed to upload file' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
@@ -25,7 +24,6 @@ export async function POST(request) {
   }
 }
 
-// The next lines are required for Pages API Routes only
 export const config = {
   api: {
     bodyParser: false,

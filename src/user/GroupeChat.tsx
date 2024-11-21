@@ -65,8 +65,9 @@ export const GroupeChat = () => {
 
   const handleUploadImage = async (file: File) => {
     if (file) {
-      await dispatch(uploadImageMessage({ file, receiverId: parsedRoomId, receiverType: 'group' }));
+      await dispatch(uploadImageMessage({ file, receiverId: parsedRoomId, receiverType: 'group',content: newMessage.trim() }));
       setSelectedFile(null);
+      setNewMessage('');
     }
   };
 

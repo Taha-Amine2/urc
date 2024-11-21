@@ -13,7 +13,6 @@ export const MessageChat = () => {
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // State type is File or null
 
-  // Ref to the file input element
   const fileInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (userId) {
@@ -24,19 +23,17 @@ export const MessageChat = () => {
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
   
-    // Create the new message object
     const newMessageObj = {
-      message_id: Date.now(), // Temporary unique ID for optimistic UI
+      message_id: Date.now(), 
       sender_id: Number(sessionStorage.getItem('id')),
       receiver_id: Number(userId),
       content: newMessage.trim(),
       timestamp: new Date().toISOString(),
-      image_url: null, // Assuming it's a text message, adjust if it's an image
+      image_url: null, 
     };
   
-    // Optimistically update the local state
     dispatch({
-      type: 'messages/addMessage', // Dispatch an action to add the new message
+      type: 'messages/addMessage', 
       payload: newMessageObj,
     });
   
@@ -64,8 +61,9 @@ export const MessageChat = () => {
 
   const handleUploadImage = async (file: File) => {
     if (file) {
-      await dispatch(uploadImageMessage({ file, receiverId: Number(userId),receiverType:'user' }));
-      setSelectedFile(null); // Reset selected file after upload
+      await dispatch(uploadImageMessage({ file, receiverId: Number(userId),receiverType:'user',content: newMessage.trim(), }));
+      setSelectedFile(null);
+      setNewMessage('');
     }
   };
 
