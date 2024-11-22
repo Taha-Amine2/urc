@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessagesGrp, uploadImageMessage, addMessage } from '../slices/messagesSlice';
 import { RootState, AppDispatch } from '../store';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { UserList } from './UserList';
 import { RoomsList } from './RoomsList';
 
@@ -16,7 +16,11 @@ export const GroupeChat = () => {
   const scrollRef = useRef<HTMLInputElement>(null);
 
   const parsedRoomId = Number(roomId);
-
+  const navigate = useNavigate(); 
+  const handleLogout = () => {
+    sessionStorage.clear(); // Clear session storage
+    navigate('/'); // Rediriger vers la racine
+  };
   useEffect(() => {
     if (!isNaN(parsedRoomId)) {
       dispatch(fetchMessagesGrp({ receiverId: parsedRoomId, receiverType: 'group' }));
@@ -83,26 +87,49 @@ export const GroupeChat = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden ">
-      {/* Sidebar */}
-      <div className="w-1/4 bg-white border-r border-gray-300">
-        <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-black text-white">
+    <div className="flex h-screen w-screen overflow-y-hidden">
+      <div className="w-1/4 bg-white border-r border-gray-300 sticky top-0">
+        <header className="p-4 border-b border-gray-300 flex justify-between items-center bg-black text-white ">
           <h1 className="text-2xl font-semibold">UBO Chat Relay</h1>
+          <button
+        onClick={handleLogout}
+        className="flex items-center gap-2  hover:bg-gray-400 hover:text-black text-white py-2 px-4 rounded transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1"
+          />
+        </svg>
+        Déconnexion
+      </button>
         </header>
-        <div className="flex flex-col w-[100%]">
-          {/* Title for Groups/Rooms section */}
-          <div className="p-4 text-xl font-semibold">Utilisateurs</div>
-          <UserList />
+        <div className="flex flex-col w-[100%] h-full">
+  {/* Section pour "Utilisateurs" */}
+  <div className="p-4 text-xl font-semibold flex-shrink-0 text-center">Utilisateurs</div>
+  <div className="flex-1 overflow-y-auto">
+    <UserList />
+  </div>
 
-          {/* Title for Users section */}
-          <div className="p-4 text-xl font-semibold">Groupes</div>
-          <RoomsList />
-        </div>
-      </div>
+  {/* Section pour "Groupes" */}
+  <div className="p-4 text-xl font-semibold flex-shrink-0 text-center">Groupes</div>
+  <div className="flex-1 overflow-y-auto">
+    <RoomsList />
+  </div>
+</div>
+</div>
 
       {/* Main Chat Area */}
-      <div className="flex flex-col w-[80%]">
-        <div className="flex-1 p-4 overflow-y-auto ">
+      <div className="flex flex-col w-[80%] sticky top-0">
+      <div className="flex-1 p-4 overflow-y-auto h-screen">
         {loading ? (
             <div className="flex justify-center items-center h-full">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-black border-solid"></div>

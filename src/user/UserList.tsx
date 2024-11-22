@@ -23,7 +23,7 @@ export const UserList = () => {
   };
 
   return (
-    <div className="max-w-md mx-left bg-gray-100 shadow-lg rounded-lg overflow-hidden md:max-w-lg align h-full">
+    <div className="max-w-md mx-left bg-gray-100 shadow-lg rounded-lg  overflow-y-auto md:max-w-lg align h-full">
       <div className="md:flex">
         <div className="w-full p-4">
           {loading ? (
