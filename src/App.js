@@ -29,7 +29,21 @@ function App() {
       const sw = navigator.serviceWorker;
 
       // Écouter le message envoyé depuis le service worker
-      
+      sw.onmessage = (event) => {
+        console.log('Got event from SW:', event.data);
+        const { senderId,receiver_Id, receiverType } = event.data;
+        
+        if (receiverType === 'user') {
+          const receiverId=senderId
+          dispatch(fetchMessages({ receiverId, receiverType }));
+        } else if (receiverType === 'group') {
+          const receiverId=receiver_Id
+          dispatch(fetchMessagesGrp({ receiverId, receiverType }));
+        }
+
+
+        const { title, message } = event.data; 
+      };
     }
   }, []);
   return (
