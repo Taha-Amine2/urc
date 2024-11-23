@@ -118,22 +118,7 @@ export const MessageChat = () => {
 </div>
       <div className="flex flex-col w-[80%] sticky top-0">
         <div className="flex-1 p-4 overflow-y-auto h-screen">
-          {loading ? (
-            <div className="flex justify-center items-center h-full">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-black border-solid"></div>
-
-              <div className="text-center">
-                <p className="mt-4 ml-5 text-slate-600 text-lg font-semibold">Chargement des messages...</p>
-              </div>
-            </div>
-          ) : error ? (
-            <div className="flex justify-center items-center h-full">
-              <div className="text-center">
-                <p className="text-red-500 text-lg font-semibold">Erreur lors du chargement des messages</p>
-                <p className="text-gray-500 text-sm">Veuillez réessayer plus tard.</p>
-              </div>
-            </div>
-          ) : (
+          {(
             <ul className="space-y-4">
               {messages.map((message, index) => (
                 <li
