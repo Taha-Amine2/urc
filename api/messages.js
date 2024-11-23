@@ -48,7 +48,7 @@ export default async (request, response) => {
                             icon: "https://www.univ-brest.fr/themes/custom/ubo_parent/favicon.ico",
                         },
                         data: {
-                            senderId: user.id,
+                            senderId: sender.id,
                             receiverId: receiver_id,
                             receiverType: receiver_type,
                             messageId: message.message_id,
