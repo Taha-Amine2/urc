@@ -49,7 +49,7 @@ export default async (request, response) => {
                         },
                         data: {
                             senderId: sender.id,
-                            receiverId: receiver_id,
+                            receiver_Id: receiver_id,
                             receiverType: receiver_type,
                             messageId: message.message_id,
                         },

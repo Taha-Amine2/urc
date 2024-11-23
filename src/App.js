@@ -31,10 +31,13 @@ function App() {
       // Écouter le message envoyé depuis le service worker
       sw.onmessage = (event) => {
         console.log('Got event from SW:', event.data);
-        const { senderId,receiverId, receiverType } = event.data;
+        const { senderId,receiver_Id, receiverType } = event.data;
+        
         if (receiverType === 'user') {
-          dispatch(fetchMessages({ senderId, receiverType }));
+          const receiverId=senderId
+          dispatch(fetchMessages({ receiverId, receiverType }));
         } else if (receiverType === 'group') {
+          const receiverId=receiver_Id
           dispatch(fetchMessagesGrp({ receiverId, receiverType }));
         }
 
