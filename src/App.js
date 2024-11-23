@@ -31,17 +31,15 @@ function App() {
       // Écouter le message envoyé depuis le service worker
       sw.onmessage = (event) => {
         console.log('Got event from SW:', event.data);
-        const { receiverId, receiverType } = event.data;
+        const { senderId,receiverId, receiverType } = event.data;
         if (receiverType === 'user') {
-          dispatch(fetchMessages({ receiverId, receiverType }));
+          dispatch(fetchMessages({ senderId, receiverType }));
         } else if (receiverType === 'group') {
           dispatch(fetchMessagesGrp({ receiverId, receiverType }));
         }
 
 
-        // Vous pouvez traiter le message ici. Par exemple, vous pouvez afficher un toast, une alerte ou mettre à jour l'état
-        const { title, message } = event.data;  // Assurez-vous que `event.data` contient les bonnes informations
-        alert(`New Notification: ${title} - ${message}`);
+        const { title, message } = event.data; 
       };
     }
   }, []);
