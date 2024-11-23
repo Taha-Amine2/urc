@@ -9,6 +9,8 @@ import { RoomsList } from './user/RoomsList.tsx';
 import { MessageChat } from './user/MessageChat.tsx';
 import { GroupeChat } from './user/GroupeChat.tsx';
 import Notifications from './user/Notifications.js'; // Importer Notifications
+import { fetchMessages, fetchMessagesGrp } from './slices/messagesSlice.ts';
+import { useDispatch } from 'react-redux';
 
 function App() {
   window.Notification.requestPermission().then((permission) => {
@@ -19,6 +21,8 @@ function App() {
     }
   });
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     // Assurez-vous que le service worker est disponible
     if ('serviceWorker' in navigator) {
@@ -27,6 +31,13 @@ function App() {
       // Écouter le message envoyé depuis le service worker
       sw.onmessage = (event) => {
         console.log('Got event from SW:', event.data);
+        const { receiverId, receiverType } = event.data;
+        if (receiverType === 'user') {
+          dispatch(fetchMessages({ receiverId, receiverType }));
+        } else if (receiverType === 'group') {
+          dispatch(fetchMessagesGrp({ receiverId, receiverType }));
+        }
+
 
         // Vous pouvez traiter le message ici. Par exemple, vous pouvez afficher un toast, une alerte ou mettre à jour l'état
         const { title, message } = event.data;  // Assurez-vous que `event.data` contient les bonnes informations
