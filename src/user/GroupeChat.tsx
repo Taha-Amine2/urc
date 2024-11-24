@@ -28,6 +28,13 @@ export const GroupeChat = () => {
       console.error('Invalid room ID:', roomId);
     }
     
+    const sw = navigator.serviceWorker;
+    if (sw != null) {
+      sw.onmessage = (event) => {
+        console.log("Got event from sw: " + JSON.stringify(event.data));
+        dispatch(fetchMessagesGrp({ receiverId: Number(parsedRoomId), receiverType: 'group' }));
+      };
+    }
   }, [dispatch, parsedRoomId]);
 
   const handleSendMessage = async () => {
