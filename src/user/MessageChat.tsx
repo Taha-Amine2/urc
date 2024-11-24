@@ -22,19 +22,11 @@ export const MessageChat = () => {
       dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
     }
 
-    if ('serviceWorker' in navigator) {
-      const sw = navigator.serviceWorker;
-
-      // Écouter le message envoyé depuis le service worker
+    const sw = navigator.serviceWorker;
+    if (sw != null) {
       sw.onmessage = (event) => {
-        console.log('Got event from SW:', event.data);
-        const { senderId,receiver_Id, receiverType } = event.data;
-        
-          const receiverId=senderId
-          dispatch(fetchMessages({ receiverId, receiverType }));
-        
-
-        const { title, message } = event.data; 
+        console.log("Got event from sw: " + JSON.stringify(event.data));
+        dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
       };
     }
   }, [dispatch, userId]);

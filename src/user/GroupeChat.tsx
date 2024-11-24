@@ -27,21 +27,7 @@ export const GroupeChat = () => {
     } else {
       console.error('Invalid room ID:', roomId);
     }
-
-    if ('serviceWorker' in navigator) {
-      const sw = navigator.serviceWorker;
-
-      // Écouter le message envoyé depuis le service worker
-      sw.onmessage = (event) => {
-        console.log('Got event from SW:', event.data);
-        const { senderId,receiver_Id, receiverType } = event.data;
-        
-          const receiverId=receiver_Id
-          dispatch(fetchMessagesGrp({ receiverId, receiverType }));
-   
-      };
-    }
-
+    
   }, [dispatch, parsedRoomId]);
 
   const handleSendMessage = async () => {

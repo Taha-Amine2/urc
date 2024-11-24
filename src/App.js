@@ -21,7 +21,6 @@ function App() {
     }
   });
 
-  const dispatch = useDispatch();
 
   return (
     <Notifications> {/* Notifications doit envelopper toute l'application */}
