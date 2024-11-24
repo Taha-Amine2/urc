@@ -5,9 +5,9 @@ import React, { useEffect } from 'react';
 import { Register } from "./user/Register.tsx";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { UserList } from './user/UserList.tsx';
-import { RoomsList } from './rooms/RoomsList';
-import { MessageChat } from './chat/MessageChat';
-import { GroupeChat } from './chat/GroupeChat';
+import { RoomsList } from './rooms/RoomsList.tsx';
+import { MessageChat } from './chat/MessageChat.tsx';
+import { GroupeChat } from './chat/GroupeChat.tsx';
 import Notifications from './Notifications.js'; // Importer Notifications
 import { fetchMessages, fetchMessagesGrp } from './slices/messagesSlice.ts';
 import { useDispatch } from 'react-redux';

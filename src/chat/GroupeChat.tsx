@@ -155,7 +155,9 @@ export const GroupeChat = () => {
                     ) : (
                       <p>{message.content}</p>
                     )}
-                    <span className="text-xs text-gray-500">{message.sender_name} {message.timestamp}</span>
+                   <span className="text-xs text-gray-500">
+      <span className="font-bold text-gray-400">{message.sender_name}</span> {message.timestamp}
+    </span>
                   </div>
                   {index === messages.length - 1 && <div ref={scrollRef} />}
                 </li>
