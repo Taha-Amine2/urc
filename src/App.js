@@ -35,7 +35,7 @@ function App() {
         
         if (receiverType === 'user') {
           const receiverId=senderId
-          dispatch(fetchMessages({ receiverId, receiverType }));
+          console.log(receiverId)
         } else if (receiverType === 'group') {
           const receiverId=receiver_Id
           dispatch(fetchMessagesGrp({ receiverId, receiverType }));
