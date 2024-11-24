@@ -84,7 +84,9 @@ export const GroupeChat = () => {
 
   const handleUploadImage = async (file: File) => {
     if (file) {
-      await dispatch(uploadImageMessage({ file, receiverId: parsedRoomId, receiverType: 'group', content: newMessage.trim() }));
+      const messageimage = newMessage.trim() === '' ? 'IMAGE' : newMessage.trim();
+      await dispatch(uploadImageMessage({ file, receiverId: parsedRoomId, receiverType: 'group', content: messageimage }));
+      dispatch(fetchMessagesGrp({ receiverId: parsedRoomId, receiverType: 'group' }));
       setSelectedFile(null);
       setNewMessage('');
     }
@@ -138,7 +140,12 @@ export const GroupeChat = () => {
       {/* Main Chat Area */}
       <div className="flex flex-col w-[80%] sticky top-0">
       <div className="flex-1 p-4 overflow-y-auto h-screen">
-        {(
+        {!roomId ? (
+    // Affichage du message lorsque userId est vide
+    <div className="flex items-center justify-center h-full text-gray-500 text-xl">
+      Sélectionnez une conversation pour commencer
+    </div>
+  ) :(
             <ul className="space-y-4">
               {messages.map((message, index) => (
                 <li key={message.message_id} className={`flex ${message.sender_id === Number(sessionStorage.getItem('id')) ? 'justify-end' : ''}`}>
@@ -160,7 +167,7 @@ export const GroupeChat = () => {
         <footer className="bg-white border-t border-gray-300 p-4 flex items-center w-full justify-between">
           <textarea
             className="h-13 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 w-[84%] resize-none"
-            placeholder="Type your message here..."
+            placeholder="Ecrire un message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
@@ -176,7 +183,7 @@ export const GroupeChat = () => {
           </button>
 
           <button onClick={handleSendMessage} className="bg-green-500 text-white rounded-lg px-4 py-2 ml-2 w-[6%]">
-            Send
+            Envoyer
           </button>
         </footer>
       </div>
