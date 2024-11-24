@@ -23,29 +23,6 @@ function App() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    // Assurez-vous que le service worker est disponible
-    if ('serviceWorker' in navigator) {
-      const sw = navigator.serviceWorker;
-
-      // Écouter le message envoyé depuis le service worker
-      sw.onmessage = (event) => {
-        console.log('Got event from SW:', event.data);
-        const { senderId,receiver_Id, receiverType } = event.data;
-        
-        if (receiverType === 'user') {
-          const receiverId=senderId
-          console.log(receiverId)
-        } else if (receiverType === 'group') {
-          const receiverId=receiver_Id
-          dispatch(fetchMessagesGrp({ receiverId, receiverType }));
-        }
-
-
-        const { title, message } = event.data; 
-      };
-    }
-  }, []);
   return (
     <Notifications> {/* Notifications doit envelopper toute l'application */}
       <Router>

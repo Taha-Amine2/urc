@@ -21,6 +21,22 @@ export const MessageChat = () => {
     if (userId) {
       dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
     }
+
+    if ('serviceWorker' in navigator) {
+      const sw = navigator.serviceWorker;
+
+      // Écouter le message envoyé depuis le service worker
+      sw.onmessage = (event) => {
+        console.log('Got event from SW:', event.data);
+        const { senderId,receiver_Id, receiverType } = event.data;
+        
+          const receiverId=senderId
+          dispatch(fetchMessages({ receiverId, receiverType }));
+        
+
+        const { title, message } = event.data; 
+      };
+    }
   }, [dispatch, userId]);
 
   const handleLogout = () => {
