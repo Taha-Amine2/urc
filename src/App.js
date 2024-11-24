@@ -5,10 +5,10 @@ import React, { useEffect } from 'react';
 import { Register } from "./user/Register.tsx";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { UserList } from './user/UserList.tsx';
-import { RoomsList } from './user/RoomsList.tsx';
-import { MessageChat } from './user/MessageChat.tsx';
-import { GroupeChat } from './user/GroupeChat.tsx';
-import Notifications from './user/Notifications.js'; // Importer Notifications
+import { RoomsList } from './rooms/RoomsList';
+import { MessageChat } from './chat/MessageChat';
+import { GroupeChat } from './chat/GroupeChat';
+import Notifications from './Notifications.js'; // Importer Notifications
 import { fetchMessages, fetchMessagesGrp } from './slices/messagesSlice.ts';
 import { useDispatch } from 'react-redux';
 
@@ -23,7 +23,7 @@ function App() {
 
 
   return (
-    <Notifications> {/* Notifications doit envelopper toute l'application */}
+    <Notifications> 
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />

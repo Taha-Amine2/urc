@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages, sendMessage, uploadImageMessage } from '../slices/messagesSlice';
 import { RootState, AppDispatch } from '../store';
 import { useNavigate, useParams } from 'react-router-dom';
-import { UserList } from './UserList';
-import { RoomsList } from './RoomsList';
+import { UserList } from '../user/UserList';
+import { RoomsList } from '../rooms/RoomsList';
 
 export const MessageChat = () => {
   const { userId } = useParams();
