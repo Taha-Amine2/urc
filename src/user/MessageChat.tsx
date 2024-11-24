@@ -22,7 +22,14 @@ export const MessageChat = () => {
       dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
     }
 
-   
+    const sw = navigator.serviceWorker;
+    if (sw != null) {
+      sw.onmessage = (event) => {
+        console.log("Got event from sw: " + JSON.stringify(event.data));
+        dispatch(fetchMessages({ receiverId: Number(userId), receiverType: 'user' }));
+        navigate(`/messages/user/${Number(userId)}`);
+      };
+    }
   }, [dispatch, userId]);
 
   const handleLogout = () => {
